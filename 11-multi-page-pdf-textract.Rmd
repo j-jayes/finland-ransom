@@ -1,0 +1,13 @@
+---
+title: "Multi page pdf textract"
+author: "JJayes"
+date: "25/02/2022"
+output: html_document
+---
+
+Following along with [this tutorial](https://www.youtube.com/watch?v=L6vdd9OYF_8).
+
+```{r}
+
+```
+

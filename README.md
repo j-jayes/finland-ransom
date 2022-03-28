@@ -1,9 +1,9 @@
-# Title
+# Digitizing Finland Ransom
 
 ## Purpose
 
-Describes project
+For Kerstin
 
 ## Process
 
-Describes how far I am
+Starting out

@@ -5,3 +5,100 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
 ---
 
+```{r}
+library(tidyverse)
+library(here)
+library(magick)
+
+
+```
+
+Process::
+
+Read in the PDF files. Convert them to images. 
+
+
+```{r}
+pdf <- image_read_pdf(here("data", "Egentliga Finland_11_16.pdf"))
+
+jpeg <- image_convert(pdf, format = "jpeg")
+
+n_pages <- length(jpeg)
+
+make_images <- function(){
+  
+  for (i in 1:n_pages){
+    
+    message("Writing image ", i)
+    
+    filename <- str_c(here("jpegs", "EF_"), i, ".jpeg")
+    
+    jpeg[i] %>% image_write(filename)
+    
+  }
+  
+}
+
+make_images()
+
+img <- image_read(path = "jpegs/EF_1_crop_3.jpg")
+
+img <- img %>% 
+  image_quantize(max = 2, colorspace = "gray")
+
+img %>% image_write("jpegs/EF_1_crop_3_gray.jpg")
+
+```
+
+
+## Dewarp and binarize
+
+```{r}
+library(reticulate)
+```
+
+
+
+```{python}
+import boto3
+```
+
+
+```{r}
+library(jsonlite)
+
+
+df <- read_json("IMG_8087_thresh_rop.png_blocks.json")
+
+listviewer::jsonedit(df)
+
+library(tidyverse)
+```
+
+Get dates from riksvakanslistan. 
+
+
+```{r}
+library(tesseract)
+
+img <- image_read("jpegs/IMG_8087.jpg")
+
+img
+
+img_gray <- img %>%   # tune this parameter
+  image_deskew(threshold = 1000) %>% 
+  image_despeckle() %>% 
+  # makes grayscale
+  image_quantize(max = 255, 
+                 colorspace = "gray", 
+                 dither = T)
+
+text <- img %>% 
+  image_ocr(language = "swe")
+
+text_gray <- img_gray %>% 
+  image_ocr(language = "swe")
+
+
+```
+
