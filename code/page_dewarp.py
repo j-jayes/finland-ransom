@@ -20,8 +20,8 @@ import scipy.optimize
 # for some reason pylint complains about cv2 members being undefined :(
 # pylint: disable=E1101
 
-PAGE_MARGIN_X = 1       # reduced px to ignore near L/R edge. used to be 10
-PAGE_MARGIN_Y = 1       # reduced px to ignore near T/B edge. used to be 10
+PAGE_MARGIN_X = 1       # reduced px to ignore near L/R edge. used to be 20
+PAGE_MARGIN_Y = 1       # reduced px to ignore near T/B edge. used to be 20
 
 OUTPUT_ZOOM = 1.0        # how much to zoom output relative to *original* image
 OUTPUT_DPI = 300         # just affects stated DPI of PNG, not appearance
@@ -834,7 +834,7 @@ def remap_image(name, img, small, page_dims, params):
     pil_image = Image.fromarray(thresh)
     pil_image = pil_image.convert('1')
 
-    threshfile = name + '_thresh.png'
+    threshfile = 'threshed/' + name + '_thresh.png'
     pil_image.save(threshfile, dpi=(OUTPUT_DPI, OUTPUT_DPI))
 
     if DEBUG_LEVEL >= 1:

@@ -19,7 +19,7 @@ Read in the PDF files. Convert them to images.
 
 
 ```{r}
-pdf <- image_read_pdf(here("data", "Egentliga Finland_11_16.pdf"))
+pdf <- image_read_pdf(here("data", "agric_1900_malmo.pdf"))
 
 jpeg <- image_convert(pdf, format = "jpeg")
 
@@ -31,7 +31,7 @@ make_images <- function(){
     
     message("Writing image ", i)
     
-    filename <- str_c(here("jpegs", "EF_"), i, ".jpeg")
+    filename <- str_c(here("jpegs", "agric_1900_malmo_"), i, ".jpeg")
     
     jpeg[i] %>% image_write(filename)
     
@@ -102,3 +102,20 @@ text_gray <- img_gray %>%
 
 ```
 
+
+```{r}
+df <- read.csv("jpegs/agric_1900_malmo_1.jpeg_tab.csv", sep = ";", skip = 2)
+
+df %>% 
+  as_tibble() %>% 
+  janitor::clean_names() %>% view
+
+df <- read.csv("jpegs/agric_1900_malmo_2.jpeg_tab.csv", sep = ";", skip = 2)
+
+df %>% 
+  as_tibble() %>% 
+  janitor::clean_names() %>% view
+
+
+df <- read.csv("jpegs/agric_1900_malmo_1_2_clip.jpg_tab.csv", sep = ";", skip = 2)
+```

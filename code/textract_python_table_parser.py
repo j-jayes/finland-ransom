@@ -5,7 +5,7 @@ import io
 from io import BytesIO
 import sys
 from pprint import pprint
-
+import csv
 
 def get_rows_columns_map(table_result, blocks_map):
     rows = {}
@@ -101,9 +101,13 @@ def main(file_name):
 
     output_file =  f"{file_name}_tab.csv"
 
-    # replace content
+    # old way
     with open(output_file, "wt") as fout:
-        fout.write(table_csv)
+       fout.write(table_csv)
+
+    # replace content
+    # with open(output_file, "wt") as fout:
+        # fout.csv.writer(table_csv, delimiter=";")
 
     # show the results
     print('CSV OUTPUT FILE: ', output_file)

@@ -4,3 +4,124 @@ author: "JJayes"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: html_document
 ---
+
+
+Analysis
+```{r}
+library(tidyverse)
+```
+
+### Read in data for table 1 and 2
+
+```{r}
+df <- read.csv("jpegs/agric_1900_malmo_3_4_clip.jpg_tab.csv", sep = ";", skip = 2)
+
+df <- df %>% 
+  as_tibble() %>% 
+  janitor::clean_names() %>% 
+  pivot_longer(-x1) %>%
+  filter(str_detect(x1, "[0-9].*")) %>% 
+  mutate(name = parse_number(name)) %>% 
+  mutate(value = str_remove_all(value, "[[:punct:]]"),
+         value = str_squish(value),
+         value = parse_number(value))
+
+codebook <- readxl::read_excel("data/agric_output_codebook.xlsx")
+
+codebook <- codebook %>% 
+  select(col, desc, units)
+
+df <- df %>% 
+  inner_join(codebook, by = c("name" = "col"))
+
+df <- df %>% 
+  mutate(region_code = parse_number(x1))
+
+df <- df %>% 
+  filter(!str_detect(x1, "1909|1910"))
+```
+
+
+### Read in data for table 3 and 4
+
+```{r}
+df <- read.csv("jpegs/agric_1900_malmo_1_2_clip.jpg_tab.csv", sep = ";", skip = 2)
+
+df %>% view
+
+df <- df %>% 
+  as_tibble() %>% 
+  janitor::clean_names() %>% 
+  pivot_longer(-x1) %>%
+  filter(str_detect(x1, "[0-9].*")) %>% 
+  mutate(name = parse_number(name)) %>% 
+  mutate(value = str_remove_all(value, "[[:punct:]]"),
+         value = str_squish(value),
+         value = parse_number(value))
+
+codebook <- readxl::read_excel("data/agric_output_codebook.xlsx")
+
+codebook <- codebook %>% 
+  select(col, desc, units)
+
+df <- df %>% 
+  inner_join(codebook, by = c("name" = "col"))
+
+df <- df %>% 
+  mutate(region_code = parse_number(x1))
+
+df <- df %>% 
+  filter(!str_detect(x1, "1909|1910"))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+df %>% 
+  filter(str_detect(desc, "Horses")) %>% 
+  mutate(x1 = fct_reorder(x1, region_code)) %>% 
+  ggplot(aes(x = value, y = x1, fill = x1)) +
+  geom_col(show.legend = F) +
+  facet_wrap(~ desc)
+```
+
+
+Relationship between number of horses and agricultural output
+
+```{r}
+df %>% 
+  distinct(desc) %>% view
+
+df %>% 
+  filter(str_detect(desc, "Potatoes harvest|Horses over 3 years"),
+         !str_detect(x1, "Malm")) %>% 
+  select(x1, desc, value) %>% 
+  pivot_wider(names_from = desc, values_from = value) %>% 
+  ggplot(aes(`Horses over 3 years`, `Potatoes harvest`)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+
+
+
